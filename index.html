@@ -32,58 +32,32 @@
   *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
   html,body{margin:0;padding:0;}
   body{
-    background:
-      radial-gradient(circle at 20% -10%, #4A82C4 0%, transparent 45%),
-      var(--bg);
+    background:var(--bg);
     font-family:var(--font-body);
     color:var(--ink-900);
-    display:flex;
-    align-items:flex-start;
-    justify-content:center;
-    min-height:100vh;
-    padding:36px 16px;
+    min-height:100dvh;
   }
 
-  /* ---------- phone shell ---------- */
-  .phone{
-    width:390px;
-    height:844px;
+  /* ---------- app shell (fills the real viewport, no device bezel) ---------- */
+  .app-shell{
+    width:100%;
+    max-width:480px;
+    margin:0 auto;
+    min-height:100dvh;
     background:var(--surface);
-    border-radius:44px;
-    overflow:hidden;
     position:relative;
-    box-shadow:0 30px 60px -20px rgba(14,42,72,0.45), 0 0 0 10px #0b0f14, 0 0 0 12px #26303b;
+    overflow-x:hidden;
     display:flex;
     flex-direction:column;
   }
-  .statusbar{
-    height:47px;
-    flex:0 0 auto;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    padding:0 26px;
-    font-family:var(--font-display);
-    font-weight:700;
-    font-size:15px;
-    color:var(--ink-900);
-    background:var(--surface);
-  }
-  .statusbar .icons{display:flex; gap:6px; align-items:center;}
-  .notch{
-    position:absolute; top:0; left:50%; transform:translateX(-50%);
-    width:120px; height:26px; background:#0b0f14; border-radius:0 0 16px 16px; z-index:50;
-  }
 
-  /* ---------- app scroll body ---------- */
+  /* ---------- app content ---------- */
   .app{
     flex:1 1 auto;
-    overflow-y:auto;
     display:flex;
     flex-direction:column;
     background:var(--bg);
   }
-  .app::-webkit-scrollbar{display:none;}
 
   /* ---------- header ---------- */
   .app-header{
@@ -189,10 +163,10 @@
 
   /* ---------- card stack ---------- */
   .stack-wrap{
-    flex:1 1 auto;
     position:relative;
     padding:14px 14px 4px;
-    min-height:420px;
+    height:min(560px, 66dvh);
+    min-height:400px;
   }
   .stack{
     position:relative;
@@ -433,22 +407,23 @@
 
   /* ---------- queue drawer ---------- */
   .drawer-backdrop{
-    position:absolute; inset:0; background:rgba(14,32,50,0.45);
+    position:fixed; inset:0; background:rgba(14,32,50,0.45);
     opacity:0; pointer-events:none; transition:opacity .25s ease; z-index:80;
   }
   .drawer-backdrop.open{opacity:1; pointer-events:auto;}
   .drawer{
-    position:absolute; left:0; right:0; bottom:0;
+    position:fixed; left:50%; bottom:-100%;
+    transform:translateX(-50%);
+    width:100%; max-width:480px;
     background:var(--surface);
     border-radius:20px 20px 0 0;
-    transform:translateY(100%);
-    transition:transform .3s cubic-bezier(.2,.8,.2,1);
+    transition:bottom .3s cubic-bezier(.2,.8,.2,1);
     z-index:90;
-    max-height:72%;
+    max-height:72dvh;
     display:flex; flex-direction:column;
     box-shadow:0 -10px 30px rgba(14,32,50,0.25);
   }
-  .drawer.open{transform:translateY(0);}
+  .drawer.open{bottom:0;}
   .drawer-handle{
     width:36px; height:4px; border-radius:2px; background:var(--line);
     margin:10px auto 4px;
@@ -477,8 +452,8 @@
   .drawer-foot .foot-val{font-family:var(--font-mono); font-weight:700; font-size:15px; color:var(--navy-800);}
 
   /* ---------- make-a-bid modal ---------- */
-  .bid-drawer{max-height:88%;}
-  .bid-drawer.expanded{max-height:96%;}
+  .bid-drawer{max-height:88dvh;}
+  .bid-drawer.expanded{max-height:96dvh;}
   .bid-drawer .drawer-head{gap:14px;}
   .bid-drawer .head-icons{display:flex; align-items:center; gap:14px;}
   .bid-section-title{
@@ -571,18 +546,7 @@
 </head>
 <body>
 
-<div class="phone">
-  <div class="notch"></div>
-
-  <div class="statusbar">
-    <span>9:41</span>
-    <div class="icons">
-      <svg width="18" height="12" viewBox="0 0 18 12" fill="none"><rect x="0" y="7" width="3" height="5" rx="0.5" fill="#12202F"/><rect x="5" y="5" width="3" height="7" rx="0.5" fill="#12202F"/><rect x="10" y="3" width="3" height="9" rx="0.5" fill="#12202F"/><rect x="15" y="0" width="3" height="12" rx="0.5" fill="#12202F"/></svg>
-      <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><path d="M8 10.5C8.6 10.5 9.1 10 9.1 9.4C9.1 8.8 8.6 8.3 8 8.3C7.4 8.3 6.9 8.8 6.9 9.4C6.9 10 7.4 10.5 8 10.5Z" fill="#12202F"/><path d="M5 7.2C5.8 6.4 6.9 6 8 6C9.1 6 10.2 6.4 11 7.2" stroke="#12202F" stroke-width="1.2" stroke-linecap="round"/><path d="M2.3 4.4C4 2.7 5.9 1.9 8 1.9C10.1 1.9 12 2.7 13.7 4.4" stroke="#12202F" stroke-width="1.2" stroke-linecap="round"/></svg>
-      <svg width="24" height="12" viewBox="0 0 24 12" fill="none"><rect x="0.5" y="0.5" width="20" height="11" rx="2.5" stroke="#12202F"/><rect x="2" y="2" width="16" height="8" rx="1.2" fill="#12202F"/><rect x="21.5" y="4" width="1.5" height="4" rx="0.7" fill="#12202F"/></svg>
-    </div>
-  </div>
-
+<div class="app-shell">
   <div class="app" id="app">
 
     <div class="app-header">
