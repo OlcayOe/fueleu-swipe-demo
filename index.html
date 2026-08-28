@@ -1,0 +1,1150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FuelEU Marketplace — Swipe</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy-900:#214A7F;
+    --navy-800:#2559A0;
+    --navy-700:#2E67B1;
+    --blue-accent:#2E67B1;
+    --accent-500:#5B4FE0;
+    --accent-600:#4038B0;
+    --accent-050:#EDEBFB;
+    --green-600:#2FA360;
+    --green-050:#E6F6E9;
+    --red-500:#EB614C;
+    --red-050:#FBE7E7;
+    --bg:#F5F5F5;
+    --surface:#FFFFFF;
+    --ink-900:#1B2733;
+    --ink-600:#5B6773;
+    --ink-400:#8D97A2;
+    --line:#E3E6EA;
+    --font-display:'Sora',sans-serif;
+    --font-body:'Inter',sans-serif;
+    --font-mono:'IBM Plex Mono',monospace;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(circle at 20% -10%, #4A82C4 0%, transparent 45%),
+      var(--bg);
+    font-family:var(--font-body);
+    color:var(--ink-900);
+    display:flex;
+    align-items:flex-start;
+    justify-content:center;
+    min-height:100vh;
+    padding:36px 16px;
+  }
+
+  /* ---------- phone shell ---------- */
+  .phone{
+    width:390px;
+    height:844px;
+    background:var(--surface);
+    border-radius:44px;
+    overflow:hidden;
+    position:relative;
+    box-shadow:0 30px 60px -20px rgba(14,42,72,0.45), 0 0 0 10px #0b0f14, 0 0 0 12px #26303b;
+    display:flex;
+    flex-direction:column;
+  }
+  .statusbar{
+    height:47px;
+    flex:0 0 auto;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 26px;
+    font-family:var(--font-display);
+    font-weight:700;
+    font-size:15px;
+    color:var(--ink-900);
+    background:var(--surface);
+  }
+  .statusbar .icons{display:flex; gap:6px; align-items:center;}
+  .notch{
+    position:absolute; top:0; left:50%; transform:translateX(-50%);
+    width:120px; height:26px; background:#0b0f14; border-radius:0 0 16px 16px; z-index:50;
+  }
+
+  /* ---------- app scroll body ---------- */
+  .app{
+    flex:1 1 auto;
+    overflow-y:auto;
+    display:flex;
+    flex-direction:column;
+    background:var(--bg);
+  }
+  .app::-webkit-scrollbar{display:none;}
+
+  /* ---------- header ---------- */
+  .app-header{
+    background:linear-gradient(170deg, #2A5EA3 0%, var(--navy-700) 100%);
+    padding:14px 20px 16px;
+    border-radius:0 0 22px 22px;
+    flex:0 0 auto;
+  }
+  .app-header .row-top{
+    display:flex; justify-content:space-between; align-items:flex-start;
+  }
+  .eyebrow{
+    font-family:var(--font-mono);
+    font-size:10px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:#8FB4DE;
+    margin:0 0 3px;
+  }
+  .app-header h1{
+    font-family:var(--font-display);
+    font-size:20px;
+    font-weight:700;
+    color:#fff;
+    margin:0;
+    letter-spacing:-.01em;
+  }
+  .app-header p.sub{
+    font-family:var(--font-body);
+    font-size:12.5px;
+    color:#B7CCE3;
+    margin:4px 0 0;
+  }
+  .header-btn{
+    width:38px;height:38px;border-radius:12px;
+    background:rgba(255,255,255,0.10);
+    border:1px solid rgba(255,255,255,0.16);
+    display:flex;align-items:center;justify-content:center;
+    color:#fff; position:relative; flex:0 0 auto;
+  }
+  .header-actions{display:flex; gap:8px;}
+  .queue-badge{
+    position:absolute; top:-6px; right:-6px;
+    background:var(--accent-500); color:#FFFFFF;
+    font-family:var(--font-mono); font-size:10px; font-weight:600;
+    width:18px;height:18px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    border:2px solid var(--navy-800);
+  }
+
+  /* compliance mini chips */
+  .chip-row{
+    display:flex; gap:8px; margin-top:12px;
+  }
+  .chip{
+    flex:1;
+    background:rgba(255,255,255,0.08);
+    border:1px solid rgba(255,255,255,0.14);
+    border-radius:14px;
+    padding:8px 12px;
+  }
+  .chip .chip-label{
+    font-size:10px; color:#9FBBDA; text-transform:uppercase; letter-spacing:.06em;
+    font-family:var(--font-mono); margin-bottom:3px;
+  }
+  .chip .chip-value{
+    font-family:var(--font-display); font-weight:700; font-size:15px; color:#fff;
+    display:flex; align-items:baseline; gap:4px;
+  }
+  .chip .chip-value small{font-family:var(--font-mono); font-size:10.5px; color:#B7CCE3; font-weight:500;}
+  .chip .chip-status{
+    display:inline-flex; align-items:center; gap:3px;
+    font-size:9.5px; color:#7BE0AC; margin-top:3px; font-family:var(--font-mono);
+  }
+
+  /* ---------- ticker ---------- */
+  .ticker{
+    margin:12px 16px 0;
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:9px 14px;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    flex:0 0 auto;
+    box-shadow:0 1px 2px rgba(14,42,72,0.04);
+  }
+  .ticker .t-info{flex:1;}
+  .ticker .t-label{
+    font-family:var(--font-mono); font-size:10px; color:var(--ink-400);
+    letter-spacing:.05em; text-transform:uppercase; margin:0 0 3px;
+  }
+  .ticker .t-value{
+    font-family:var(--font-display); font-weight:700; font-size:17px; color:var(--ink-900);
+    display:flex; align-items:baseline; gap:5px;
+  }
+  .ticker .t-value span.unit{font-family:var(--font-mono); font-size:11px; color:var(--ink-400); font-weight:500;}
+  .ticker .t-delta{
+    font-family:var(--font-mono); font-size:11px; color:var(--green-600); font-weight:600; margin-top:2px;
+  }
+  .ticker svg{display:block;}
+
+  /* ---------- card stack ---------- */
+  .stack-wrap{
+    flex:1 1 auto;
+    position:relative;
+    padding:14px 14px 4px;
+    min-height:420px;
+  }
+  .stack{
+    position:relative;
+    width:100%;
+    height:100%;
+  }
+  .card{
+    position:absolute;
+    inset:0;
+    background:var(--surface);
+    border-radius:20px;
+    border:1px solid var(--line);
+    box-shadow:0 18px 30px -14px rgba(14,42,72,0.28);
+    touch-action:none;
+    will-change:transform;
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
+  }
+  .card .perforation{
+    height:14px;
+    flex:0 0 auto;
+    background-image: radial-gradient(circle at 10px 7px, var(--bg) 5px, transparent 5.5px);
+    background-size:20px 14px;
+    background-repeat:repeat-x;
+    position:relative;
+  }
+  .card .perforation::after{
+    content:"";
+    position:absolute; left:14px; right:14px; top:6px;
+    border-top:1.5px dashed #D3DBE4;
+  }
+  .card-scroll{
+    flex:1 1 auto;
+    overflow:hidden;
+    padding:0 16px 14px;
+    display:flex;
+    flex-direction:column;
+  }
+
+  .card-top{
+    display:flex; justify-content:space-between; align-items:flex-start;
+    margin-top:5px;
+  }
+  .offer-tag{
+    font-family:var(--font-mono);
+    font-size:10px; font-weight:600; letter-spacing:.04em;
+    background:var(--navy-800); color:#fff;
+    padding:4px 8px; border-radius:8px;
+  }
+  .pool-id{
+    font-family:var(--font-mono); font-size:10.5px; color:var(--ink-400);
+  }
+
+  .stamp{
+    position:absolute;
+    top:34%; left:50%;
+    transform:translate(-50%,-50%) rotate(-10deg);
+    border:3px solid var(--green-600);
+    color:var(--green-600);
+    font-family:var(--font-display);
+    font-weight:800;
+    font-size:26px;
+    letter-spacing:.06em;
+    padding:5px 14px;
+    border-radius:10px;
+    opacity:0;
+    pointer-events:none;
+    text-transform:uppercase;
+    z-index:5;
+    background:rgba(255,255,255,0.7);
+  }
+  .stamp.bid{border-color:var(--green-600); color:var(--green-600); left:28%; transform:translate(-50%,-50%) rotate(-12deg);}
+  .stamp.pass{border-color:var(--red-500); color:var(--red-500); left:72%; transform:translate(-50%,-50%) rotate(12deg);}
+
+  .seller{
+    margin-top:10px;
+  }
+  .seller h2{
+    font-family:var(--font-display); font-size:17px; font-weight:700;
+    margin:0 0 2px; letter-spacing:-.01em; line-height:1.22;
+  }
+  .seller .profile-type{
+    font-size:11.5px; color:var(--ink-600);
+    display:flex; align-items:center; gap:5px;
+  }
+  .profile-type .dot{width:5px;height:5px;border-radius:50%;background:var(--accent-500);}
+
+  .divider{
+    border-top:1px solid var(--line);
+    margin:10px 0;
+  }
+
+  .fact-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr 1fr;
+    gap:7px;
+  }
+  .stat-cell{
+    background:var(--bg);
+    border-radius:11px;
+    padding:7px 8px 7px;
+    text-align:left;
+  }
+  .stat-cell .s-label{
+    font-size:8.5px; color:var(--ink-400); text-transform:uppercase; letter-spacing:.03em;
+    font-family:var(--font-mono); margin-bottom:3px;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  }
+  .stat-cell .s-value{
+    font-family:var(--font-mono); font-weight:600; font-size:12.5px; color:var(--ink-900);
+  }
+  .stat-cell .s-value.big{font-size:14px;}
+
+  .banner{
+    margin-top:9px;
+    border-radius:11px;
+    padding:8px 10px;
+    display:flex; gap:7px; align-items:center;
+  }
+  .banner.ok{background:var(--green-050); border:1px solid #CDEEDC;}
+  .banner.warn{background:var(--red-050); border:1px solid #F5D2CE;}
+  .banner .b-icon{flex:0 0 auto; display:flex;}
+  .banner .b-title{font-size:11.5px; font-weight:700; margin:0; line-height:1.3;}
+  .banner.ok .b-title{color:#146742;}
+  .banner.warn .b-title{color:#A6362A;}
+
+  .price-block{
+    margin-top:9px;
+    display:flex;
+    align-items:flex-end;
+    justify-content:space-between;
+    background:var(--navy-900);
+    border-radius:13px;
+    padding:11px 13px;
+  }
+  .price-block .p-label{
+    font-family:var(--font-mono); font-size:9px; color:#9FBBDA; text-transform:uppercase; letter-spacing:.05em; margin:0 0 2px;
+  }
+  .price-block .p-value{
+    font-family:var(--font-display); font-weight:800; font-size:20px; color:#fff;
+  }
+  .price-block .p-value span{font-family:var(--font-mono); font-size:11px; color:#B7CCE3; font-weight:500;}
+  .price-block .p-total{font-family:var(--font-mono); font-size:10px; color:#8FB4DE; margin-top:2px;}
+  .price-block .p-right{text-align:right;}
+  .payment-pill{
+    display:inline-block; margin-top:4px;
+    background:var(--accent-500); color:#FFFFFF;
+    font-family:var(--font-mono); font-weight:600; font-size:10px;
+    padding:4px 9px; border-radius:20px;
+  }
+
+  .view-details{
+    margin-top:8px;
+    display:flex; align-items:center; justify-content:center; gap:5px;
+    font-size:11px; font-weight:600; color:var(--blue-accent);
+    cursor:pointer;
+  }
+
+  /* ---------- action buttons ---------- */
+  .actions{
+    flex:0 0 auto;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:24px;
+    padding:10px 0 4px;
+  }
+  .action-btn{
+    width:52px; height:52px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    border:1.5px solid var(--line);
+    background:var(--surface);
+    box-shadow:0 8px 16px -8px rgba(14,42,72,0.25);
+  }
+  .action-btn.small{width:42px; height:42px;}
+  .action-btn.pass{color:var(--red-500); border-color:#F3CFC9;}
+  .action-btn.info{color:var(--ink-600);}
+  .action-btn.bid{
+    background:var(--accent-500);
+    border:none; color:#FFFFFF;
+    box-shadow:0 10px 20px -8px rgba(18,116,110,0.5);
+  }
+
+  .progress-row{
+    flex:0 0 auto;
+    display:flex; align-items:center; justify-content:center; gap:5px;
+    padding-bottom:6px;
+  }
+  .progress-row .p-dot{width:5px;height:5px;border-radius:50%; background:var(--line);}
+  .progress-row .p-dot.done{background:var(--accent-500);}
+  .progress-row .p-count{
+    font-family:var(--font-mono); font-size:10.5px; color:var(--ink-400); margin-left:6px;
+  }
+
+  /* ---------- bottom nav ---------- */
+  .bottom-nav{
+    flex:0 0 auto;
+    display:flex;
+    border-top:1px solid var(--line);
+    background:var(--surface);
+    padding:6px 4px 10px;
+  }
+  .nav-item{
+    flex:1; display:flex; flex-direction:column; align-items:center; gap:2px;
+    color:var(--ink-400); font-size:9.5px; font-family:var(--font-body); font-weight:500;
+  }
+  .nav-item.active{color:var(--navy-800);}
+  .nav-item svg{display:block;}
+
+  /* ---------- empty / done state ---------- */
+  .done-card{
+    position:absolute; inset:0;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center; padding:30px;
+    background:var(--surface); border-radius:20px; border:1px solid var(--line);
+  }
+  .done-card .done-icon{
+    width:60px;height:60px;border-radius:50%;
+    background:var(--accent-050); color:var(--accent-600);
+    display:flex; align-items:center; justify-content:center; margin-bottom:16px;
+  }
+  .done-card h3{font-family:var(--font-display); font-size:18px; margin:0 0 6px;}
+  .done-card p{font-size:12.5px; color:var(--ink-600); margin:0 0 18px; line-height:1.5;}
+  .done-summary{
+    display:flex; gap:10px; width:100%; margin-bottom:18px;
+  }
+  .done-summary .d-cell{
+    flex:1; background:var(--bg); border-radius:12px; padding:12px 8px;
+  }
+  .done-summary .d-cell .d-val{font-family:var(--font-mono); font-weight:700; font-size:15px; color:var(--ink-900);}
+  .done-summary .d-cell .d-lab{font-family:var(--font-mono); font-size:9px; color:var(--ink-400); text-transform:uppercase; margin-top:3px;}
+  .reset-btn{
+    background:var(--navy-800); color:#fff; border:none;
+    font-family:var(--font-body); font-weight:600; font-size:13px;
+    padding:12px 22px; border-radius:12px;
+  }
+
+  /* ---------- queue drawer ---------- */
+  .drawer-backdrop{
+    position:absolute; inset:0; background:rgba(14,32,50,0.45);
+    opacity:0; pointer-events:none; transition:opacity .25s ease; z-index:80;
+  }
+  .drawer-backdrop.open{opacity:1; pointer-events:auto;}
+  .drawer{
+    position:absolute; left:0; right:0; bottom:0;
+    background:var(--surface);
+    border-radius:20px 20px 0 0;
+    transform:translateY(100%);
+    transition:transform .3s cubic-bezier(.2,.8,.2,1);
+    z-index:90;
+    max-height:72%;
+    display:flex; flex-direction:column;
+    box-shadow:0 -10px 30px rgba(14,32,50,0.25);
+  }
+  .drawer.open{transform:translateY(0);}
+  .drawer-handle{
+    width:36px; height:4px; border-radius:2px; background:var(--line);
+    margin:10px auto 4px;
+  }
+  .drawer-head{
+    padding:8px 20px 12px; border-bottom:1px solid var(--line);
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .drawer-head h3{font-family:var(--font-display); font-size:16px; margin:0;}
+  .drawer-head .close-x{color:var(--ink-400);}
+  .drawer-body{overflow-y:auto; padding:10px 20px 20px;}
+  .queue-row{
+    display:flex; justify-content:space-between; align-items:center;
+    padding:11px 0; border-bottom:1px solid var(--line);
+  }
+  .queue-row:last-child{border-bottom:none;}
+  .queue-row .q-name{font-size:12.5px; font-weight:600; color:var(--ink-900);}
+  .queue-row .q-sub{font-family:var(--font-mono); font-size:10.5px; color:var(--ink-400); margin-top:2px;}
+  .queue-row .q-price{font-family:var(--font-mono); font-weight:600; font-size:12.5px; color:var(--navy-800); text-align:right;}
+  .queue-empty{padding:30px 0; text-align:center; color:var(--ink-400); font-size:12.5px;}
+  .drawer-foot{
+    padding:14px 20px 20px; border-top:1px solid var(--line);
+    display:flex; justify-content:space-between; align-items:center;
+  }
+  .drawer-foot .foot-label{font-size:11.5px; color:var(--ink-600);}
+  .drawer-foot .foot-val{font-family:var(--font-mono); font-weight:700; font-size:15px; color:var(--navy-800);}
+
+  /* ---------- make-a-bid modal ---------- */
+  .bid-drawer{max-height:88%;}
+  .bid-drawer.expanded{max-height:96%;}
+  .bid-drawer .drawer-head{gap:14px;}
+  .bid-drawer .head-icons{display:flex; align-items:center; gap:14px;}
+  .bid-section-title{
+    display:flex; justify-content:space-between; align-items:center;
+    flex-wrap:wrap; row-gap:6px; margin:2px 0 16px;
+  }
+  .bid-section-title .title-main{
+    font-family:var(--font-display); font-weight:700; font-size:15px; color:var(--ink-900);
+  }
+  .bid-region-tag{
+    font-family:var(--font-mono); font-size:10px; color:var(--ink-600);
+    background:var(--bg); padding:4px 9px; border-radius:20px; border:1px solid var(--line);
+    display:inline-flex; align-items:center; gap:4px;
+  }
+  .form-group{margin-bottom:14px;}
+  .form-group label{
+    display:block; font-size:11.5px; font-weight:600; color:var(--ink-600);
+    margin-bottom:6px;
+  }
+  .input-wrap{
+    display:flex; align-items:stretch;
+    border:1.5px solid var(--line); border-radius:12px;
+    overflow:hidden; background:var(--surface);
+  }
+  .input-wrap input{
+    flex:1 1 auto; min-width:0; border:none; outline:none;
+    padding:12px 14px; font-family:var(--font-mono); font-size:15px; color:var(--ink-900);
+    background:transparent;
+  }
+  .input-wrap input::placeholder{color:var(--ink-400);}
+  .input-wrap .unit-chip{
+    flex:0 0 auto; display:flex; align-items:center; white-space:nowrap;
+    background:var(--bg); padding:0 13px; font-family:var(--font-mono);
+    font-size:12px; color:var(--ink-600); border-left:1px solid var(--line);
+  }
+  .field-hint{
+    font-size:11px; color:var(--ink-400); margin:6px 2px 0; font-style:italic;
+  }
+  .bid-box{
+    border:1px solid var(--line); border-radius:14px; padding:14px; margin-top:4px;
+  }
+  .bid-box-label{
+    display:block; font-size:12.5px; font-weight:600; color:var(--ink-900); margin-bottom:8px;
+  }
+  .bid-text-input{
+    width:100%; border:1.5px solid var(--line); border-radius:10px;
+    padding:10px 12px; font-family:var(--font-body); font-size:13px; color:var(--ink-900);
+    outline:none; background:var(--surface);
+  }
+  .bid-text-input::placeholder{color:var(--ink-400);}
+  .bid-radio-block{
+    margin-top:14px; padding-top:12px; border-top:1px solid var(--line);
+  }
+  .bid-radio-title{
+    font-size:12px; font-weight:600; color:var(--ink-700, var(--ink-900)); margin:0 0 9px;
+  }
+  .radio-row{display:flex; flex-wrap:wrap; gap:14px 18px;}
+  .radio-opt{
+    display:flex; align-items:center; gap:6px;
+    font-size:12.5px; color:var(--ink-900); cursor:pointer;
+  }
+  .radio-opt input[type="radio"]{
+    width:15px; height:15px; margin:0; accent-color:var(--accent-500); cursor:pointer;
+  }
+  .bid-foot{
+    flex:0 0 auto;
+    display:flex; justify-content:space-between; align-items:flex-end;
+    padding:14px 20px 20px; border-top:1px solid var(--line); background:var(--surface);
+  }
+  .bid-foot-label{
+    font-size:10px; text-transform:uppercase; letter-spacing:.05em;
+    font-family:var(--font-mono); color:var(--ink-400); margin:0 0 2px;
+  }
+  .bid-foot-value{
+    font-family:var(--font-display); font-weight:800; font-size:19px; color:var(--ink-900); margin:0;
+  }
+  .bid-foot-price{
+    font-family:var(--font-mono); font-size:12px; color:var(--ink-600); margin:3px 0 0;
+  }
+  .send-bid-btn{
+    background:var(--accent-500); color:#fff; border:none;
+    font-family:var(--font-body); font-weight:700; font-size:13.5px;
+    padding:13px 22px; border-radius:13px;
+    box-shadow:0 10px 20px -8px rgba(91,79,224,0.5);
+  }
+  .send-bid-btn:disabled{
+    background:var(--ink-400); box-shadow:none; opacity:.6;
+  }
+</style>
+</head>
+<body>
+
+<div class="phone">
+  <div class="notch"></div>
+
+  <div class="statusbar">
+    <span>9:41</span>
+    <div class="icons">
+      <svg width="18" height="12" viewBox="0 0 18 12" fill="none"><rect x="0" y="7" width="3" height="5" rx="0.5" fill="#12202F"/><rect x="5" y="5" width="3" height="7" rx="0.5" fill="#12202F"/><rect x="10" y="3" width="3" height="9" rx="0.5" fill="#12202F"/><rect x="15" y="0" width="3" height="12" rx="0.5" fill="#12202F"/></svg>
+      <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><path d="M8 10.5C8.6 10.5 9.1 10 9.1 9.4C9.1 8.8 8.6 8.3 8 8.3C7.4 8.3 6.9 8.8 6.9 9.4C6.9 10 7.4 10.5 8 10.5Z" fill="#12202F"/><path d="M5 7.2C5.8 6.4 6.9 6 8 6C9.1 6 10.2 6.4 11 7.2" stroke="#12202F" stroke-width="1.2" stroke-linecap="round"/><path d="M2.3 4.4C4 2.7 5.9 1.9 8 1.9C10.1 1.9 12 2.7 13.7 4.4" stroke="#12202F" stroke-width="1.2" stroke-linecap="round"/></svg>
+      <svg width="24" height="12" viewBox="0 0 24 12" fill="none"><rect x="0.5" y="0.5" width="20" height="11" rx="2.5" stroke="#12202F"/><rect x="2" y="2" width="16" height="8" rx="1.2" fill="#12202F"/><rect x="21.5" y="4" width="1.5" height="4" rx="0.7" fill="#12202F"/></svg>
+    </div>
+  </div>
+
+  <div class="app" id="app">
+
+    <div class="app-header">
+      <div class="row-top">
+        <div>
+          <p class="eyebrow">Compliance Year 2026</p>
+          <h1>Surplus Marketplace</h1>
+        </div>
+        <div class="header-actions">
+          <div class="header-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 5H20L14 12.5V19L10 21V12.5L4 5Z" stroke="#fff" stroke-width="1.8" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="header-btn" id="queueBtn">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M6 4H18V21L12 17.5L6 21V4Z" stroke="#fff" stroke-width="1.8" stroke-linejoin="round"/></svg>
+            <span class="queue-badge" id="queueBadge">0</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="chip-row">
+        <div class="chip">
+          <div class="chip-label">Compliance balance</div>
+          <div class="chip-value">17,110<small>tCO₂e</small></div>
+          <div class="chip-status">● Compliant</div>
+        </div>
+        <div class="chip">
+          <div class="chip-label">Est. potential earnings</div>
+          <div class="chip-value">€1.66<small>M this cycle</small></div>
+          <div class="chip-status">↑ 6.2% vs last week</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ticker">
+      <svg width="58" height="30" viewBox="0 0 58 30" fill="none">
+        <polyline points="0,20 6,18 12,21 18,12 24,15 30,8 36,13 42,6 48,10 58,4" stroke="#2E67B1" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <div class="t-info">
+        <p class="t-label">BetterSea Surplus Index</p>
+        <div class="t-value">181.20 <span class="unit">€/tCO₂e</span></div>
+        <div class="t-delta">▲ 2.4% · 7D +3.2%</div>
+      </div>
+    </div>
+
+    <div class="stack-wrap">
+      <div class="stack" id="stack"></div>
+    </div>
+
+    <div class="progress-row" id="progressRow"></div>
+
+    <div class="actions">
+      <div class="action-btn pass" id="btnPass">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M6 6L18 18M18 6L6 18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
+      </div>
+      <div class="action-btn small info" id="btnInfo">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/><path d="M12 11V17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="7.6" r="1.1" fill="currentColor"/></svg>
+      </div>
+      <div class="action-btn bid" id="btnBid">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 12L10 18L20 6" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+    </div>
+
+    <div class="bottom-nav">
+      <div class="nav-item active">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none"><path d="M3 11L12 4L21 11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 10V20H19V10" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+        Browse
+      </div>
+      <div class="nav-item">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none"><path d="M6 4H18V21L12 17.5L6 21V4Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+        My bids
+      </div>
+      <div class="nav-item">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none"><path d="M4 5H20V16H8L4 20V5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+        Messages
+      </div>
+      <div class="nav-item">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none"><path d="M3 17L9 11L13 15L21 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Activity
+      </div>
+      <div class="nav-item">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="3.4" stroke="currentColor" stroke-width="1.8"/><path d="M4.5 20C5.7 16.4 8.5 14.5 12 14.5C15.5 14.5 18.3 16.4 19.5 20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        Profile
+      </div>
+    </div>
+
+    <div class="drawer-backdrop" id="drawerBackdrop"></div>
+    <div class="drawer" id="drawer">
+      <div class="drawer-handle"></div>
+      <div class="drawer-head">
+        <h3>Bid queue</h3>
+        <div class="close-x" id="closeDrawer">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 6L18 18M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </div>
+      </div>
+      <div class="drawer-body" id="drawerBody">
+        <div class="queue-empty">No bids sent yet — swipe right on an offer to add it here.</div>
+      </div>
+      <div class="drawer-foot">
+        <span class="foot-label">Total queued</span>
+        <span class="foot-val" id="drawerTotal">0 tCO₂e · €0</span>
+      </div>
+    </div>
+
+    <div class="drawer-backdrop" id="infoBackdrop"></div>
+    <div class="drawer" id="infoDrawer">
+      <div class="drawer-handle"></div>
+      <div class="drawer-head">
+        <h3 id="infoTitle">Manifest details</h3>
+        <div class="close-x" id="closeInfoDrawer">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 6L18 18M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </div>
+      </div>
+      <div class="drawer-body" id="infoBody"></div>
+    </div>
+
+    <div class="drawer-backdrop" id="bidBackdrop"></div>
+    <div class="drawer bid-drawer" id="bidDrawer">
+      <div class="drawer-handle"></div>
+      <div class="drawer-head">
+        <h3 id="bidTitle">Pool —</h3>
+        <div class="head-icons">
+          <div class="close-x" id="expandBidDrawer">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M9 4H4V9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 20H20V15" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M20 4L14 10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M4 20L10 14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          </div>
+          <div class="close-x" id="closeBidDrawer">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 6L18 18M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          </div>
+        </div>
+      </div>
+      <div class="drawer-body">
+        <div class="bid-section-title">
+          <span class="title-main">Make a Bid</span>
+          <span class="bid-region-tag" id="bidRegionTag">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none"><path d="M12 21C12 21 19 14.6 19 9.5C19 5.36 15.64 2 12 2C8.36 2 5 5.36 5 9.5C5 14.6 12 21 12 21Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="12" cy="9.5" r="2.2" stroke="currentColor" stroke-width="1.8"/></svg>
+            —
+          </span>
+        </div>
+
+        <div class="form-group">
+          <label>Choose cost per balance *</label>
+          <div class="input-wrap">
+            <input type="number" id="bidCost" step="0.01" min="0" inputmode="decimal" placeholder="0.00">
+            <span class="unit-chip">€ / tCO₂e</span>
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-bottom:16px;">
+          <label>Amount *</label>
+          <div class="input-wrap">
+            <input type="number" id="bidAmount" step="1" min="0" inputmode="decimal" placeholder="0.00">
+            <span class="unit-chip">tCO₂e</span>
+          </div>
+          <p class="field-hint" id="bidMaxHint">Maximum available: 0.00 tCO₂e</p>
+        </div>
+
+        <div class="bid-box">
+          <label class="bid-box-label">How many vessels will you be adding to the pool?</label>
+          <input type="text" class="bid-text-input" id="bidVessels" placeholder="Type here">
+
+          <div class="bid-radio-block">
+            <p class="bid-radio-title">My vessels have grey zone exposure</p>
+            <div class="radio-row">
+              <label class="radio-opt"><input type="radio" name="greyZoneBid" value="Yes">Yes</label>
+              <label class="radio-opt"><input type="radio" name="greyZoneBid" value="No" checked>No</label>
+            </div>
+          </div>
+
+          <div class="bid-radio-block">
+            <p class="bid-radio-title">Disclosure of UBOs and financial reports?</p>
+            <div class="radio-row">
+              <label class="radio-opt"><input type="radio" name="uboBid" value="can" checked>Can be disclosed</label>
+              <label class="radio-opt"><input type="radio" name="uboBid" value="prefer-not">Preferably not</label>
+              <label class="radio-opt"><input type="radio" name="uboBid" value="not-at-all">Not at all</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="bid-foot">
+        <div>
+          <p class="bid-foot-label">Requested surplus</p>
+          <p class="bid-foot-value" id="bidReqSurplus">0.00 tCO₂e</p>
+          <p class="bid-foot-price" id="bidTotalPrice">0.00 €</p>
+        </div>
+        <button class="send-bid-btn" id="sendBidBtn" disabled>Send Bid</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const offers = [
+  { id:"102-391", region:"Northern Europe", profile:"Ship Owner / Charterer", volume:300, price:186, payment:"Flexible", greyZone:"Yes", ubo:"Preferred", validated:true, delivery:"Flexible", registry:"EU-MRV-88213", note:"Repeat counterparty — 4 prior trades settled on time." },
+  { id:"102-390", region:"Northern Europe", profile:"Ship Owner / Charterer", volume:100, price:184, payment:"Flexible", greyZone:"Yes", ubo:"Preferred", validated:true, delivery:"Flexible", registry:"EU-MRV-88213", note:"Second lot from the same pool as offer 102-391." },
+  { id:"134-389", region:"Western Europe", profile:"Ship Owner / Charterer", volume:4000, price:179, payment:"Flexible", greyZone:"No", ubo:"Preferred", validated:true, delivery:"By 31 Oct", registry:"EU-MRV-40217", note:"Large single-lot surplus; counterparty prefers one buyer." },
+  { id:"269-388", region:"Southern Europe", profile:"Ship Owner / Charterer", volume:1250, price:191, payment:"Flexible", greyZone:"No", ubo:"Mandatory", validated:true, delivery:"Flexible", registry:"EU-MRV-51042", note:"Mandatory UBO check adds ~2 business days to close." },
+  { id:"269-387", region:"Southern Europe", profile:"Ship Owner / Charterer", volume:1000, price:188, payment:"Flexible", greyZone:"Yes", ubo:"Mandatory", validated:true, delivery:"Flexible", registry:"EU-MRV-51042", note:"Same pool as offer 269-388, smaller lot." },
+  { id:"157-386", region:"East Asia", profile:"Ship Owner / Charterer", volume:12400, price:172, payment:"Flexible", greyZone:"No", ubo:"Preferred", validated:false, delivery:"By 15 Nov", registry:"Pending", note:"Largest lot on the board — registry check still in progress." },
+  { id:"242-371", region:"North America", profile:"Broker / Trader", volume:400, price:195, payment:"Flexible", greyZone:"No", ubo:"Preferred", validated:false, delivery:"Flexible", registry:"Pending", note:"Listed via broker; underlying counterparty not yet disclosed." },
+  { id:"131-363", region:"Middle East", profile:"Broker / Trader", volume:10000, price:168, payment:"Deposit 20 / 80", greyZone:"Yes", ubo:"Preferred", validated:false, delivery:"By 30 Nov", registry:"Pending", note:"Deposit-based schedule — 20% upfront, 80% on delivery." },
+  { id:"267-347", region:"South America", profile:"Ship Owner / Charterer", volume:500, price:199, payment:"Deposit 50 / 50", greyZone:"No", ubo:"Preferred", validated:false, delivery:"Flexible", registry:"Pending", note:"New counterparty — no prior trade history on the platform." },
+];
+
+let idx = 0;
+const stackEl = document.getElementById('stack');
+const progressRow = document.getElementById('progressRow');
+const queueBadge = document.getElementById('queueBadge');
+const queued = [];
+
+function fmt(n){ return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","); }
+function fmtDec(n){ return n.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2}); }
+
+function buildProgress(){
+  progressRow.innerHTML = "";
+  offers.forEach((_,i)=>{
+    const d = document.createElement('span');
+    d.className = 'p-dot' + (i < idx ? ' done' : '');
+    progressRow.appendChild(d);
+  });
+  const c = document.createElement('span');
+  c.className = 'p-count';
+  c.textContent = Math.min(idx, offers.length) + ' / ' + offers.length + ' reviewed';
+  progressRow.appendChild(c);
+}
+
+function cardHTML(o, offerNum){
+  const total = fmt(Math.round(o.volume * o.price));
+  const validatedIcon = o.validated
+    ? `<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="#E6F6E9" stroke="#2FA360" stroke-width="1.4"/><path d="M7.5 12.5L10.5 15.5L16.5 9" stroke="#2FA360" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`
+    : `<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="#FBE7E7" stroke="#EB614C" stroke-width="1.4"/><path d="M9 9L15 15M15 9L9 15" stroke="#EB614C" stroke-width="1.8" stroke-linecap="round"/></svg>`;
+  const banner = o.validated
+    ? `<div class="banner ok">
+         <span class="b-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M12 3L5 6V11C5 15.5 8 19 12 21C16 19 19 15.5 19 11V6L12 3Z" stroke="#2FA360" stroke-width="1.6" stroke-linejoin="round"/></svg></span>
+         <p class="b-title">Verified &amp; reliable — meets marketplace requirements</p>
+       </div>`
+    : `<div class="banner warn">
+         <span class="b-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M12 3L2 20H22L12 3Z" stroke="#EB614C" stroke-width="1.6" stroke-linejoin="round"/><path d="M12 10V14" stroke="#EB614C" stroke-width="1.6" stroke-linecap="round"/><circle cx="12" cy="16.6" r="0.9" fill="#EB614C"/></svg></span>
+         <p class="b-title">Awaiting validation — bid with caution</p>
+       </div>`;
+
+  return `
+    <div class="perforation"></div>
+    <div class="stamp bid">BID SENT</div>
+    <div class="stamp pass">PASSED</div>
+    <div class="card-scroll">
+      <div class="card-top">
+        <span class="offer-tag">OFFER ${offerNum} / ${offers.length}</span>
+        <span class="pool-id">Pool ${o.id}</span>
+      </div>
+      <div class="seller">
+        <h2><svg width="15" height="15" viewBox="0 0 24 24" fill="none" style="vertical-align:-2px; margin-right:5px;"><path d="M12 21C12 21 19 14.6 19 9.5C19 5.36 15.64 2 12 2C8.36 2 5 5.36 5 9.5C5 14.6 12 21 12 21Z" stroke="#5B6773" stroke-width="1.7" stroke-linejoin="round"/><circle cx="12" cy="9.5" r="2.4" stroke="#5B6773" stroke-width="1.7"/></svg>${o.region} Surplus Lot</h2>
+        <div class="profile-type"><span class="dot"></span>${o.profile}</div>
+      </div>
+      <div class="divider"></div>
+      <div class="fact-grid">
+        <div class="stat-cell">
+          <div class="s-label">Surplus offered</div>
+          <div class="s-value big">${fmt(o.volume)} <span style="font-size:9.5px;color:var(--ink-400);">tCO₂e</span></div>
+        </div>
+        <div class="stat-cell">
+          <div class="s-label">Payment schedule</div>
+          <div class="s-value">${o.payment}</div>
+        </div>
+        <div class="stat-cell">
+          <div class="s-label">Delivery window</div>
+          <div class="s-value">${o.delivery}</div>
+        </div>
+        <div class="stat-cell">
+          <div class="s-label">Grey zone ok?</div>
+          <div class="s-value">${o.greyZone}</div>
+        </div>
+        <div class="stat-cell">
+          <div class="s-label">Required UBO</div>
+          <div class="s-value">${o.ubo}</div>
+        </div>
+        <div class="stat-cell" style="display:flex;flex-direction:column;justify-content:center;">
+          <div class="s-label">Validated</div>
+          ${validatedIcon}
+        </div>
+      </div>
+      ${banner}
+      <div class="price-block">
+        <div>
+          <p class="p-label">Asking price</p>
+          <div class="p-value">€${o.price} <span>/ tCO₂e</span></div>
+          <p class="p-total">≈ €${total} total</p>
+        </div>
+        <div class="p-right">
+          <span class="payment-pill">${o.payment.split(' ')[0]}</span>
+        </div>
+      </div>
+      <div class="view-details" id="viewDetailsHint">
+        Tap <svg width="11" height="11" viewBox="0 0 24 24" fill="none" style="margin:0 2px;"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/><path d="M12 11V17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="7.6" r="1.1" fill="currentColor"/></svg> for registry &amp; seller notes
+      </div>
+    </div>
+  `;
+}
+
+function renderStack(){
+  stackEl.innerHTML = "";
+  buildProgress();
+
+  if(idx >= offers.length){
+    const total = queued.reduce((a,b)=>a+b.volume,0);
+    const cost = queued.reduce((a,b)=>a+b.volume*b.price,0);
+    const done = document.createElement('div');
+    done.className = 'done-card';
+    done.innerHTML = `
+      <div class="done-icon">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M4 12L10 18L20 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <h3>You're all caught up</h3>
+      <p>You've reviewed every offer in this cycle. Review your queued bids or check back later for new surplus listings.</p>
+      <div class="done-summary">
+        <div class="d-cell"><div class="d-val">${queued.length}</div><div class="d-lab">Bids sent</div></div>
+        <div class="d-cell"><div class="d-val">${fmt(total)}</div><div class="d-lab">tCO₂e</div></div>
+        <div class="d-cell"><div class="d-val">€${fmt(Math.round(cost))}</div><div class="d-lab">Est. cost</div></div>
+      </div>
+      <button class="reset-btn" id="resetBtn">Start over</button>
+    `;
+    stackEl.appendChild(done);
+    document.getElementById('resetBtn').addEventListener('click', ()=>{
+      idx = 0; queued.length = 0; updateQueueUI(); renderStack();
+    });
+    return;
+  }
+
+  const visible = offers.slice(idx, idx+3).reverse();
+  visible.forEach((o, i)=>{
+    const posFromTop = visible.length - 1 - i;
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.style.zIndex = 10 + i;
+    card.style.transform = `translateY(${posFromTop*10}px) scale(${1 - posFromTop*0.035})`;
+    card.style.opacity = posFromTop > 2 ? 0 : 1;
+    const realIndex = offers.indexOf(o);
+    card.innerHTML = cardHTML(o, realIndex + 1);
+    if(posFromTop === 0){
+      card.dataset.top = "true";
+      enableDrag(card, o);
+    }
+    stackEl.appendChild(card);
+  });
+}
+
+function enableDrag(card, offer){
+  let startX=0, startY=0, dx=0, dy=0, dragging=false;
+  const bidStamp = card.querySelector('.stamp.bid');
+  const passStamp = card.querySelector('.stamp.pass');
+
+  function pointerDown(e){
+    dragging = true;
+    const p = e.touches ? e.touches[0] : e;
+    startX = p.clientX; startY = p.clientY;
+    card.style.transition = 'none';
+  }
+  function pointerMove(e){
+    if(!dragging) return;
+    const p = e.touches ? e.touches[0] : e;
+    dx = p.clientX - startX;
+    dy = p.clientY - startY;
+    const rot = dx / 18;
+    card.style.transform = `translate(${dx}px, ${dy}px) rotate(${rot}deg)`;
+    bidStamp.style.opacity = Math.max(0, Math.min(1, dx/90));
+    passStamp.style.opacity = Math.max(0, Math.min(1, -dx/90));
+  }
+  function pointerUp(){
+    if(!dragging) return;
+    dragging = false;
+    const threshold = 110;
+    if(dx > threshold){
+      resolveCard('bid', card, offer);
+    } else if(dx < -threshold){
+      resolveCard('pass', card, offer);
+    } else {
+      card.style.transition = 'transform .28s cubic-bezier(.2,.8,.2,1)';
+      card.style.transform = 'translate(0,0) rotate(0)';
+      bidStamp.style.opacity = 0; passStamp.style.opacity = 0;
+    }
+    dx = 0; dy = 0;
+  }
+
+  card.addEventListener('pointerdown', pointerDown);
+  window.addEventListener('pointermove', pointerMove);
+  window.addEventListener('pointerup', pointerUp);
+  card.addEventListener('touchstart', pointerDown, {passive:true});
+  window.addEventListener('touchmove', pointerMove, {passive:true});
+  window.addEventListener('touchend', pointerUp);
+}
+
+let pendingCard = null;
+let pendingOffer = null;
+
+function resolveCard(direction, card, offer){
+  const flyX = direction === 'bid' ? 600 : -600;
+  const rot = direction === 'bid' ? 22 : -22;
+  card.style.transition = 'transform .35s cubic-bezier(.2,.8,.2,1), opacity .35s ease';
+  card.style.transform = `translate(${flyX}px, -30px) rotate(${rot}deg)`;
+  card.style.opacity = '0';
+  if(direction === 'pass'){
+    setTimeout(()=>{
+      idx += 1;
+      renderStack();
+    }, 260);
+  } else {
+    pendingCard = card;
+    pendingOffer = offer;
+    setTimeout(()=> openBidModal(offer), 260);
+  }
+}
+
+function topCardAction(direction){
+  const top = stackEl.querySelector('.card[data-top="true"]');
+  if(!top) return;
+  const offer = offers[idx];
+  resolveCard(direction, top, offer);
+}
+
+document.getElementById('btnPass').addEventListener('click', ()=>topCardAction('pass'));
+document.getElementById('btnBid').addEventListener('click', ()=>topCardAction('bid'));
+function openOfferInfo(){
+  const o = offers[idx];
+  if(!o) return;
+  document.getElementById('infoTitle').textContent = `${o.region} · ${o.profile}`;
+  document.getElementById('infoBody').innerHTML = `
+    <div class="queue-row">
+      <div><div class="q-name">Pool ID</div><div class="q-sub">Marketplace listing reference</div></div>
+      <div class="q-price">${o.id}</div>
+    </div>
+    <div class="queue-row">
+      <div><div class="q-name">MRV registry ref</div><div class="q-sub">Verified emissions record</div></div>
+      <div class="q-price">${o.registry}</div>
+    </div>
+    <div class="queue-row">
+      <div><div class="q-name">Company profile</div><div class="q-sub">${o.profile}</div></div>
+      <div class="q-price">${o.greyZone === 'Yes' ? 'Grey zone ok' : 'No grey zone'}</div>
+    </div>
+    <div class="queue-row" style="border-bottom:none;">
+      <div style="flex:1;"><div class="q-name">Seller note</div><div class="q-sub" style="white-space:normal; line-height:1.5; margin-top:4px;">${o.note}</div></div>
+    </div>
+  `;
+  infoDrawer.classList.add('open'); infoBackdrop.classList.add('open');
+}
+document.getElementById('btnInfo').addEventListener('click', openOfferInfo);
+stackEl.addEventListener('click', (e)=>{
+  if(e.target.closest('.view-details')) openOfferInfo();
+});
+
+function updateQueueUI(){
+  queueBadge.textContent = queued.length;
+  const body = document.getElementById('drawerBody');
+  const totalEl = document.getElementById('drawerTotal');
+  if(queued.length === 0){
+    body.innerHTML = `<div class="queue-empty">No bids sent yet — swipe right on an offer to add it here.</div>`;
+  } else {
+    body.innerHTML = queued.map(o => `
+      <div class="queue-row">
+        <div>
+          <div class="q-name">${o.region} · ${o.profile}</div>
+          <div class="q-sub">Pool ${o.id} · ${fmt(o.volume)} tCO₂e</div>
+        </div>
+        <div class="q-price">€${o.price}<span style="color:var(--ink-400);font-weight:500;">/t</span></div>
+      </div>
+    `).join('');
+  }
+  const totalVol = queued.reduce((a,b)=>a+b.volume,0);
+  const totalCost = queued.reduce((a,b)=>a+b.volume*b.price,0);
+  totalEl.textContent = `${fmt(totalVol)} tCO₂e · €${fmt(Math.round(totalCost))}`;
+}
+
+const drawer = document.getElementById('drawer');
+const backdrop = document.getElementById('drawerBackdrop');
+document.getElementById('queueBtn').addEventListener('click', ()=>{
+  drawer.classList.add('open'); backdrop.classList.add('open');
+});
+document.getElementById('closeDrawer').addEventListener('click', closeDrawer);
+backdrop.addEventListener('click', closeDrawer);
+function closeDrawer(){
+  drawer.classList.remove('open'); backdrop.classList.remove('open');
+}
+
+const infoDrawer = document.getElementById('infoDrawer');
+const infoBackdrop = document.getElementById('infoBackdrop');
+document.getElementById('closeInfoDrawer').addEventListener('click', closeInfoDrawer);
+infoBackdrop.addEventListener('click', closeInfoDrawer);
+function closeInfoDrawer(){
+  infoDrawer.classList.remove('open'); infoBackdrop.classList.remove('open');
+}
+
+const bidDrawer = document.getElementById('bidDrawer');
+const bidBackdrop = document.getElementById('bidBackdrop');
+const bidCost = document.getElementById('bidCost');
+const bidAmount = document.getElementById('bidAmount');
+const bidMaxHint = document.getElementById('bidMaxHint');
+const bidReqSurplus = document.getElementById('bidReqSurplus');
+const bidTotalPrice = document.getElementById('bidTotalPrice');
+const sendBidBtn = document.getElementById('sendBidBtn');
+
+function openBidModal(offer){
+  document.getElementById('bidTitle').textContent = `Pool ${offer.id}`;
+  document.getElementById('bidRegionTag').innerHTML =
+    `<svg width="11" height="11" viewBox="0 0 24 24" fill="none"><path d="M12 21C12 21 19 14.6 19 9.5C19 5.36 15.64 2 12 2C8.36 2 5 5.36 5 9.5C5 14.6 12 21 12 21Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="12" cy="9.5" r="2.2" stroke="currentColor" stroke-width="1.8"/></svg> ${offer.region} · ${offer.profile}`;
+  bidCost.value = offer.price.toFixed(2);
+  bidAmount.value = '';
+  bidAmount.max = offer.volume;
+  bidMaxHint.textContent = `Maximum available: ${fmtDec(offer.volume)} tCO₂e`;
+  document.getElementById('bidVessels').value = '';
+  document.querySelector('input[name="greyZoneBid"][value="No"]').checked = true;
+  document.querySelector('input[name="uboBid"][value="can"]').checked = true;
+  recomputeBidSummary();
+  bidDrawer.classList.remove('expanded');
+  bidDrawer.classList.add('open'); bidBackdrop.classList.add('open');
+}
+
+function recomputeBidSummary(){
+  const cost = parseFloat(bidCost.value) || 0;
+  const amount = parseFloat(bidAmount.value) || 0;
+  bidReqSurplus.textContent = `${fmtDec(amount)} tCO₂e`;
+  bidTotalPrice.textContent = `${fmtDec(cost*amount)} €`;
+  sendBidBtn.disabled = !(cost > 0 && amount > 0);
+}
+bidCost.addEventListener('input', recomputeBidSummary);
+bidAmount.addEventListener('input', recomputeBidSummary);
+
+document.getElementById('expandBidDrawer').addEventListener('click', ()=>{
+  bidDrawer.classList.toggle('expanded');
+});
+
+function hideBidDrawer(){
+  bidDrawer.classList.remove('open'); bidBackdrop.classList.remove('open');
+}
+
+function cancelBid(){
+  if(pendingCard){
+    pendingCard.style.transition = 'transform .3s cubic-bezier(.2,.8,.2,1), opacity .3s ease';
+    pendingCard.style.transform = 'translate(0,0) rotate(0)';
+    pendingCard.style.opacity = '1';
+    const bidStamp = pendingCard.querySelector('.stamp.bid');
+    if(bidStamp) bidStamp.style.opacity = 0;
+  }
+  pendingCard = null; pendingOffer = null;
+  hideBidDrawer();
+}
+
+function confirmBid(){
+  if(!pendingOffer || sendBidBtn.disabled) return;
+  const cost = parseFloat(bidCost.value) || pendingOffer.price;
+  const amount = parseFloat(bidAmount.value) || pendingOffer.volume;
+  queued.push({ ...pendingOffer, price: cost, volume: amount });
+  updateQueueUI();
+  hideBidDrawer();
+  pendingCard = null; pendingOffer = null;
+  idx += 1;
+  renderStack();
+}
+
+document.getElementById('closeBidDrawer').addEventListener('click', cancelBid);
+bidBackdrop.addEventListener('click', cancelBid);
+sendBidBtn.addEventListener('click', confirmBid);
+
+renderStack();
+updateQueueUI();
+</script>
+</body>
+</html>
